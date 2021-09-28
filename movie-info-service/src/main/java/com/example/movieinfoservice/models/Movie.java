@@ -1,24 +1,41 @@
 package com.example.movieinfoservice.models;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
+
+@JsonRootName(value = "data")
 public class Movie {
 
-    private String movieId;
+    /*{
+        "data": {
+            "id": 2,
+            "name": "fuchsia rose",
+            "year": 2001,
+            "color": "#C74375",
+            "pantone_value": "17-2031"
+        },
+        "support": {
+            "url": "https://reqres.in/#support-heading",
+            "text": "To keep ReqRes free, contributions towards server costs are appreciated!"
+        }
+    }*/
+
+    private String id;
     private String name;
 
     public Movie() {
     }
 
-    public Movie(String movieId, String name) {
-        this.movieId = movieId;
+    public Movie(String id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public String getMovieId() {
-        return movieId;
+    public String geId() {
+        return id;
     }
 
-    public void setMovieId(String movieId) {
-        this.movieId = movieId;
+    public void seId(String id) {
+        this.id = id;
     }
 
     public String getName() {
