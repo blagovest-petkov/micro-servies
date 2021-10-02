@@ -1,4 +1,4 @@
-package com.example.ratingdataservice.resources;
+package com.example.ratingdataservice.controlers;
 
 import com.example.ratingdataservice.models.Rating;
 import com.example.ratingdataservice.models.UserRating;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/ratingsdata")
-public class RatingsResource {
+public class RatingsController {
 
     @RequestMapping("/{movieId}")
     public Rating getRating(@PathVariable("movieId") String movieId) {
@@ -21,8 +21,8 @@ public class RatingsResource {
     @RequestMapping("users/{userId}")
     public UserRating getRatings(@PathVariable("userId") String userId) {
         List<Rating> ratings = Arrays.asList(
-                new Rating("1234", 4),
-                new Rating("5678", 4)
+                new Rating("1", 4),
+                new Rating("2", 4)
         );
         return new UserRating(ratings);
     }

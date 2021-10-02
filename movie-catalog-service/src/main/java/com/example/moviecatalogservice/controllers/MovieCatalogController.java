@@ -1,43 +1,43 @@
-package com.example.moviecatalogservice.resources;
+package com.example.moviecatalogservice.controllers;
 
 import com.example.moviecatalogservice.models.CatalogItem;
 import com.example.moviecatalogservice.models.Movie;
 import com.example.moviecatalogservice.models.UserRating;
-import com.netflix.discovery.DiscoveryClient;
+import com.example.moviecatalogservice.services.MovieInfoService;
+import com.example.moviecatalogservice.services.RatingDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/catalog")
-public class MovieCatalogResource {
+public class MovieCatalogController {
 
     // Use this for advanced load balanced
-    @Autowired
-    private DiscoveryClient discoveryClient;
+    /*@Autowired
+    private DiscoveryClient discoveryClient;*/
+
+    /*@Autowired
+    private WebClient.Builder webClientBuilder;*/
 
     @Autowired
-    private RestTemplate restTemplate;
+    private RatingDataService ratingDataService;
 
     @Autowired
-    private WebClient.Builder webClientBuilder;
+    private MovieInfoService movieInfoService;
 
     @RequestMapping("/{userId}")
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId) {
 
-        UserRating userRating = restTemplate.getForObject(
-                "http://rating-data-service/ratingsdata/users/" + userId,
-                UserRating.class
-        );
+        UserRating userRating = ratingDataService.getUserRating(userId);
 
-        return userRating.getUserRating().stream().map(rating -> {
-            Movie movie = restTemplate.getForObject("http://movie-info-service/movies/" + rating.getMovieId(), Movie.class);
+        return userRating.userRating.stream().map(rating -> {
+            Movie movie = movieInfoService.getUserRating(rating.movieId);
             /*Movie movie = webClientBuilder.build()
                     .get()
                     .uri("http://localhost:8082/movies/" + rating.getMovieId())
@@ -46,8 +46,7 @@ public class MovieCatalogResource {
                     .block();*/
 
 
-            return new CatalogItem(movie.getName(), "Desc", rating.getRating());
-        })
-                .collect(Collectors.toList());
+            return new CatalogItem(movie.data.name, "Desc", rating.rating);
+        }).collect(Collectors.toList());
     }
 }
